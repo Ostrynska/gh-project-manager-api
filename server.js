@@ -108,6 +108,25 @@ app.get('/api/user-projects', (req, res) => {
   );
 });
 
+// ❌ DELETE: Видалити один проєкт
+app.delete('/api/delete-project', (req, res) => {
+  const { email, owner, name } = req.body;
+
+  if (!email || !owner || !name) {
+    return res.status(400).json({ error: 'Missing data' });
+  }
+
+  db.run(
+    `DELETE FROM user_projects WHERE email = ? AND owner = ? AND name = ?`,
+    [email, owner, name],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ success: true });
+    }
+  );
+});
+
+
 
 app.listen(3001, () => {
   console.log('✅ Сервер запущено на http://localhost:3001');
