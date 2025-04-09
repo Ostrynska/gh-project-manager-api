@@ -1,27 +1,3 @@
-// require('dotenv').config();
-
-// const express = require('express');
-// const cors = require('cors');
-// const { initDB } = require('./db');
-// const projectsRouter = require('./routes/projects');
-
-// const app = express();
-// app.use(cors());
-// app.use(express.json());
-
-// const PORT = process.env.PORT;
-
-// const start = async () => {
-//   const db = await initDB();
-//   app.use('/api/projects', projectsRouter(db));
-
-//   app.listen(PORT, () => {
-//     console.log(`Server running on port ${PORT}`);
-//   });
-// };
-
-// start();
-
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
@@ -32,7 +8,6 @@ const db = new sqlite3.Database('projects.db');
 app.use(cors());
 app.use(express.json());
 
-// Створити таблицю (один раз)
 db.run(`
 CREATE TABLE IF NOT EXISTS user_projects (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -91,7 +66,6 @@ app.patch('/api/save-projects', (req, res) => {
 });
 
 
-// ✅ GET: Отримати проєкти по email
 app.get('/api/user-projects', (req, res) => {
   const { email } = req.query;
 
@@ -108,7 +82,6 @@ app.get('/api/user-projects', (req, res) => {
   );
 });
 
-// ❌ DELETE: Видалити один проєкт
 app.delete('/api/delete-project', (req, res) => {
   const { email, owner, name } = req.body;
 
@@ -125,8 +98,6 @@ app.delete('/api/delete-project', (req, res) => {
     }
   );
 });
-
-
 
 app.listen(3001, () => {
   console.log('✅ Сервер запущено на http://localhost:3001');
