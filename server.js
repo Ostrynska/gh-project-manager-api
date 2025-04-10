@@ -1,9 +1,11 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
 const db = new sqlite3.Database('projects.db');
+const PORT = process.env.PORT;
 
 app.use(cors());
 app.use(express.json());
@@ -23,7 +25,6 @@ CREATE TABLE IF NOT EXISTS user_projects (
   )
 `);
 
-// ✅ POST: Зберегти проєкти
 app.patch('/api/save-projects', (req, res) => {
   const { email, projects } = req.body;
 
@@ -60,23 +61,18 @@ app.patch('/api/save-projects', (req, res) => {
   });
 
   stmt.finalize(() => {
-    console.log('✅ Patched or inserted projects');
     res.json({ success: true });
   });
 });
 
-
 app.get('/api/user-projects', (req, res) => {
   const { email } = req.query;
-
-  console.log('🔍 Запитано проєкти для email:', email);
 
   db.all(
     `SELECT owner, name, url, stars, forks, issues, createdAt FROM user_projects WHERE email = ?`,
     [email],
     (err, rows) => {
       if (err) return res.status(500).json({ error: err.message });
-      console.log('📤 Результат:', rows);
       res.json(rows);
     }
   );
@@ -99,6 +95,6 @@ app.delete('/api/delete-project', (req, res) => {
   );
 });
 
-app.listen(3001, () => {
-  console.log('✅ Сервер запущено на http://localhost:3001');
+app.listen(PORT, () => {
+  console.log(`Server is running at http://localhost:${PORT}`);
 });
